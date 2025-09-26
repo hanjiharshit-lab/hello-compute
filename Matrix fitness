@@ -1,0 +1,26 @@
+// Starter React App for AI Sports Challenge Arena // Free version, ready to upload on Glitch
+
+import React, { useState, useEffect } from 'react'; import './App.css';
+
+function App() { const [level, setLevel] = useState('Beginner'); const [sport, setSport] = useState('None'); const [tasks, setTasks] = useState([]); const [completedTasks, setCompletedTasks] = useState([]); const [coins, setCoins] = useState(0); const [streak, setStreak] = useState(0); const [rank, setRank] = useState('Scout');
+
+useEffect(() => { generateTasks(); }, [level, sport]);
+
+const generateTasks = () => { // Placeholder AI task generator based on level and sport let baseTasks = ['20 push-ups', '20 squats', '15 burpees']; if(sport === 'Football') baseTasks.push('Dribble ball 10 mins'); if(sport === 'Cricket') baseTasks.push('Shadow batting 15 mins');
+
+if(level === 'Intermediate') baseTasks = baseTasks.map(t => t.replace(/\d+/, (n) => parseInt(n)*1.5));
+if(level === 'Advanced') baseTasks = baseTasks.map(t => t.replace(/\d+/, (n) => parseInt(n)*2));
+
+setTasks(baseTasks);
+setCompletedTasks([]);
+
+};
+
+const completeTask = (task) => { if(!completedTasks.includes(task)) { setCompletedTasks([...completedTasks, task]); setCoins(coins + 5); setStreak(streak + 1); updateRank(streak + 1); } };
+
+const updateRank = (currentStreak) => { if(currentStreak >= 30) setRank('Major'); else if(currentStreak >= 20) setRank('Lieutenant'); else setRank('Scout'); };
+
+return ( <div className="App" style={{background: 'linear-gradient(to bottom, #1e3c72, #2a5298)', color:'white', minHeight:'100vh', padding:'20px', fontFamily:'Arial'}}> <h1 style={{textAlign:'center', marginBottom:'20px'}}>AI Sports Challenge Arena</h1> <div style={{display:'flex', justifyContent:'space-around', marginBottom:'20px'}}> <div> <label>Level: </label> <select value={level} onChange={e => setLevel(e.target.value)}> <option>Beginner</option> <option>Intermediate</option> <option>Advanced</option> <option>Pro</option> </select> </div> <div> <label>Sport: </label> <select value={sport} onChange={e => setSport(e.target.value)}> <option>None</option> <option>Football</option> <option>Cricket</option> <option>Basketball</option> </select> </div> </div> <h2>Today's Tasks</h2> <ul> {tasks.map(task => ( <li key={task} style={{margin:'10px 0'}}> <input type='checkbox' checked={completedTasks.includes(task)} onChange={()=>completeTask(task)} /> {task} {completedTasks.includes(task) ? '✅':''} </li> ))} </ul> <h3>Profile</h3> <p>Coins (Dumbbells): {coins}</p> <p>Streak: {streak} days</p> <p>Rank: {rank}</p> <p>Friend Challenge Milestone: Bonus coins on streak milestones!</p> </div> ); }
+
+export default App;
+
